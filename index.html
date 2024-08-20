@@ -86,83 +86,98 @@ select {
 </style>
 <script>
 'use strict';
-/*
-	// ToDo общий список исключений
-String.prototype.ttc2lExceptions = function(text) {
-	// ы - ɏ, и - ɨ, җ - ȼ, й - ɉ, х - ƨ, ц - ƽ, ж - ȝ
+String.prototype.ttc2lExceptions = function(text, correct) {
+	var exceptionsList = [
+		// Некоторые иксключения
+		// последняя буква или несколько в мягких слогах и другие (ц) на кириллице
+		// в -> w
+		['һава', 'hawa'],
+		['вакыт', 'waqıt'],
+		['вакт', 'waqt'],
+		['ватан', 'watan'],
+		['чуваш', 'çuwaş'],
+		['^вә$', 'wä'],
+		['савыт', 'sawıt'],
+		['авыл', 'awıl'],
+		['җава([пб])', 'cawa$1'],
+		['вөҗдан', 'wöcdan'],
+		['тавык', 'tawıq'],
+		['тавыш', 'tawış'],
+		['яв([аыугдм])', 'yaw$1'],
+		['^вак$', 'waq'],
+		['аваз', 'awaz'],
+		['авы([рз])', 'awı$1'],
+		['дәвам', 'däwäм'], // м
+		['вакый', 'waqıy'],
+		//['каравың', 'qarawıñ'],
+		['вың$', 'wıñ'],
+		['вең$', 'weñ'],
+		['вын$', 'wın'],
+		['вен$', 'wen'],
+		['әвер', 'äweр'], // р
+		['рәвеш', 'räweш'], // ш
+		['вазг', 'wäzг'], // г
+		['тасвир', 'taswir'],
+		['вәхш', 'wäxш'], // ш
+		['вәкил', 'wäkiл'], // л
+
+		// имена
+		['вәлит', 'wälit'],
+		['вәли', 'wälи'], // и
+		['вагыйз', 'wağiz'],
+		['равил', 'rawiл'], // л
+
+		// другие
+		['әйе', 'äye'],
+		['сәлам', 'säläм'], // м
+		//['табигат', 'täbiгат'], // гат
+
+		// другие
+		//['аль$', 'al\''],
+		['европ', 'yevrop'],
+		['проект', 'proyekt'],
+		['концерт', 'kontsert'],
+		['комплекс', 'kompleks'],
+		['документ', 'dokument'],
+		['академ', 'akadem'],
+		['комп', 'komp'],
+		['коммуникац', 'kommunikaц'], // ц
+		['коммун', 'kommun'],
+		['команд', 'komand'],
+
+		// имена
+		['екатер', 'yekater']
+	];
+
+	function correctWord(word) {
+		const re = new RegExp('(['+correct[0]+'])', 'g');
+		return word.replace(re, (f, p1) => correct[1][correct[0].indexOf(p1)])
+	}
+
+	for(const el of exceptionsList) {
+		const re = new RegExp(el[0], 'g');
+		if(re.test(text)) {
+			text = text.replace(re, correctWord(el[1]));
+			break;
+		}
+	}
 	
+	return text;
 };
-*/
 var translitWord = {
 'ttc2l 1': function(text) {
 	//
 	// "İı" fix ɏ -> ı, ɨ -> i
 	//
-	return text
-	// Некоторые иксключения
-	// последняя буква или несколько в мягких слогах на кириллице
-	// в -> w 
-	.replace(/һава/g, 'hawa')
-	.replace(/вакыт/g, 'waqɏt')
-	.replace(/вакт/g, 'waqt')
-	.replace(/ватан/g, 'watan')
-	.replace(/чуваш/g, 'çuwaş')
-	.replace(/^вә$/g, 'wä')
-	.replace(/савыт/g, 'sawɏt')
-	.replace(/авыл/g, 'awɏl')
-	.replace(/җава([пб])/g, 'cawa$1')
-	.replace(/вөҗдан/g, 'wöcdan')
-	.replace(/тавык/g, 'tawɏq')
-	.replace(/тавыш/g, 'tawɏş')
-	.replace(/яв([аыугдм])/g, 'yaw$1')
-	.replace(/^вак$/g, 'waq')
-	.replace(/аваз/g, 'awaz')
-	.replace(/авыр/g, 'awɏr')
-	.replace(/дәвам/g, 'däwäм') // м
-	.replace(/вакый/g, 'waqɏy')
-	//.replace(/каравың/g, 'qarawɏñ')
-	.replace(/вың$/g, 'wɏñ')
-	.replace(/вең$/g, 'weñ')
-	.replace(/вын$/g, 'wɏn')
-	.replace(/вен$/g, 'wen')
-	.replace(/әвер/g, 'äweр') // р
-	.replace(/рәвеш/g, 'räweш') // ш
-	.replace(/вазг/g, 'wäzг') // г
-	.replace(/тасвир/g, 'taswir')
-	.replace(/вәхш/g, 'wäxш') // ш
-	.replace(/вәкил/g, 'wäkiл') // л
-
-	// имена
-	.replace(/вәлит/g, 'wälɨt')
-	.replace(/вәли/g, 'wälи') // и
-	.replace(/вагыйз/g, 'wağiz')
-	.replace(/равил/g, 'rawɨл') // л
-
-	// другие
-	.replace(/әйе/g, 'äye')
-	.replace(/сәлам/g, 'säläм') // м
-	//.replace(/табигат/g, 'täbɨгат') // гат	
-
-	// другие
-	//.replace(/аль$/g, 'al\'')
-	.replace(/европ/g, 'yevrop')
-	.replace(/проект/g, 'proyekt')
-	.replace(/концерт/g, 'kontsert')
-	.replace(/комплекс/g, 'kompleks')
-	.replace(/документ/g, 'dokument')
-	.replace(/академ/g, 'akadem')
-	.replace(/комп/g, 'komp')
-	.replace(/коммуникац/g, 'kommunikats')
-	.replace(/коммун/g, 'kommun')
-	.replace(/команд/g, 'komand')
+	var correct = ['iı','ɨɏ'];
 	
-	// имена
-	.replace(/екатер/g, 'yekater')
+	return text
+	.ttc2lExceptions(text, correct)
 
 	// отдельно стоящая [я]
 	.replace(/^я$/g, 'yä')
 
-	// [qğ] перед [ый] в мягких слогах
+	// [кг] перед [ый] в мягких слогах
 	.replace(/кый([лт])([ьеә]|[кнмтл][еә])/g, 'qɨ$1$2')
 	.replace(/гы([лтр])([ьеә]|[кнмтл][еә])/g, 'ğe$1$2')
 	.replace(/гый([рз]+)([ьеә]|[кнмтл][еә])/g, 'ğɨ$1$2')
@@ -211,71 +226,16 @@ var translitWord = {
 	.replace(/[а-яёәөүҗңһ]/g, (f) => ['a', 'b', 'v', 'g', 'd', 'yɏ', 'yo', 'j', 'z', 'ɨ', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'x', 'ts', 'ç', 'ş', 'şç', '', 'ɏ', '', 'e', 'yu', 'ya', 'ä','ö','ü','c','ñ','h']['абвгдеёжзийклмнопрстуфхцчшщъыьэюяәөүҗңһ'.indexOf(f)]);
 },
 'ttc2l 1.1 w/o "İı" fix': function(text) {
+	
+	var correct = ['',''];
+	
 	return text
-	// Некоторые иксключения
-	// последняя буква или несколько в мягких слогах на кириллице
-	// в -> w 
-	.replace(/һава/g, 'hawa')
-	.replace(/вакыт/g, 'waqıt')
-	.replace(/вакт/g, 'waqt')
-	.replace(/ватан/g, 'watan')
-	.replace(/чуваш/g, 'çuwaş')
-	.replace(/^вә$/g, 'wä')
-	.replace(/савыт/g, 'sawıt')
-	.replace(/авыл/g, 'awıl')
-	.replace(/җава([пб])/g, 'cawa$1')
-	.replace(/вөҗдан/g, 'wöcdan')
-	.replace(/тавык/g, 'tawıq')
-	.replace(/тавыш/g, 'tawış')
-	.replace(/яв([аыугдм])/g, 'yaw$1')
-	.replace(/^вак$/g, 'waq')
-	.replace(/аваз/g, 'awaz')
-	.replace(/авыр/g, 'awır')
-	.replace(/дәвам/g, 'däwäм') // м
-	.replace(/вакый/g, 'waqıy')
-	//.replace(/каравың/g, 'qarawıñ')
-	.replace(/вың$/g, 'wıñ')
-	.replace(/вең$/g, 'weñ')
-	.replace(/вын$/g, 'wın')
-	.replace(/вен$/g, 'wen')
-	.replace(/әвер/g, 'äweр') // р
-	.replace(/рәвеш/g, 'räweш') // ш
-	.replace(/вазг/g, 'wäzг') // г
-	.replace(/тасвир/g, 'taswir')
-	.replace(/вәхш/g, 'wäxш') // ш
-	.replace(/вәкил/g, 'wäkiл') // л
-
-	// имена
-	.replace(/вәлит/g, 'wälit')
-	.replace(/вәли/g, 'wälи') // и
-	.replace(/вагыйз/g, 'wağiz')
-	.replace(/равил/g, 'rawiл') // л
-
-	// другие
-	.replace(/әйе/g, 'äye')
-	.replace(/сәлам/g, 'säläм') // м
-	//.replace(/табигат/g, 'täbiгат') // гат	
-
-	// другие
-	//.replace(/аль$/g, 'al\'')
-	.replace(/европ/g, 'yevrop')
-	.replace(/проект/g, 'proyekt')
-	.replace(/концерт/g, 'kontsert')
-	.replace(/комплекс/g, 'kompleks')
-	.replace(/документ/g, 'dokument')
-	.replace(/академ/g, 'akadem')
-	.replace(/комп/g, 'komp')
-	.replace(/коммуникац/g, 'kommunikats')
-	.replace(/коммун/g, 'kommun')
-	.replace(/команд/g, 'komand')
-
-	// имена
-	.replace(/екатер/g, 'yekater')
+	.ttc2lExceptions(text, correct)	
 
 	// отдельно стоящая [я]
 	.replace(/^я$/g, 'yä')
 
-	// [qğ] перед [ый] в мягких слогах
+	// [кг] перед [ый] в мягких слогах
 	.replace(/кый([лт])([ьеә]|[кнмтл][еә])/g, 'qi$1$2')
 	.replace(/гы([лтр])([ьеә]|[кнмтл][еә])/g, 'ğe$1$2')
 	.replace(/гый([рз]+)([ьеә]|[кнмтл][еә])/g, 'ği$1$2')
@@ -324,71 +284,16 @@ var translitWord = {
 	.replace(/[а-яёәөүҗңһ]/g, (f) => ['a', 'b', 'v', 'g', 'd', 'yı', 'yo', 'j', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'x', 'ts', 'ç', 'ş', 'şç', '', 'ı', '', 'e', 'yu', 'ya', 'ä','ö','ü','c','ñ','h']['абвгдеёжзийклмнопрстуфхцчшщъыьэюяәөүҗңһ'.indexOf(f)]);
 },
 'ttc2l 2 ы-ī': function(text) {
-	return text
-	// Некоторые иксключения
-	// последняя буква или несколько в мягких слогах на кириллице
-	// в -> w 
-	.replace(/һава/g, 'hawa')
-	.replace(/вакыт/g, 'waqīt')
-	.replace(/вакт/g, 'waqt')
-	.replace(/ватан/g, 'watan')
-	.replace(/чуваш/g, 'çuwaş')
-	.replace(/^вә$/g, 'wä')
-	.replace(/савыт/g, 'sawīt')
-	.replace(/авыл/g, 'awīl')
-	.replace(/җава([пб])/g, 'cawa$1')
-	.replace(/вөҗдан/g, 'wöcdan')
-	.replace(/тавык/g, 'tawīq')
-	.replace(/тавыш/g, 'tawīş')
-	.replace(/яв([аыугдм])/g, 'yaw$1')
-	.replace(/^вак$/g, 'waq')
-	.replace(/аваз/g, 'awaz')
-	.replace(/авыр/g, 'awīr')
-	.replace(/дәвам/g, 'däwäм') // м
-	.replace(/вакый/g, 'waqīy')
-	//.replace(/каравың/g, 'qarawīñ')
-	.replace(/вың$/g, 'wīñ')
-	.replace(/вең$/g, 'weñ')
-	.replace(/вын$/g, 'wīn')
-	.replace(/вен$/g, 'wen')
-	.replace(/әвер/g, 'äweр') // р
-	.replace(/рәвеш/g, 'räweш') // ш
-	.replace(/вазг/g, 'wäzг') // г
-	.replace(/тасвир/g, 'taswir')
-	.replace(/вәхш/g, 'wäxш') // ш
-	.replace(/вәкил/g, 'wäkiл') // л
 
-	// имена
-	.replace(/вәлит/g, 'wälit')
-	.replace(/вәли/g, 'wälи') // и
-	.replace(/вагыйз/g, 'wağiz')
-	.replace(/равил/g, 'rawiл') // л
+	var correct = ['ı','ī'];
 	
-	// другие
-	.replace(/әйе/g, 'äye')
-	.replace(/сәлам/g, 'säläм') // м
-	//.replace(/табигат/g, 'täbiгат') // гат
-
-	// другие
-	//.replace(/аль$/g, 'al\'')
-	.replace(/европ/g, 'yevrop')
-	.replace(/проект/g, 'proyekt')
-	.replace(/концерт/g, 'kontsert')
-	.replace(/комплекс/g, 'kompleks')
-	.replace(/документ/g, 'dokument')
-	.replace(/академ/g, 'akadem')
-	.replace(/комп/g, 'komp')
-	.replace(/коммуникац/g, 'kommunikats')
-	.replace(/коммун/g, 'kommun')
-	.replace(/команд/g, 'komand')
-
-	// имена
-	.replace(/екатер/g, 'yekater')
+	return text
+	.ttc2lExceptions(text, correct)	
 
 	// отдельно стоящая [я]
 	.replace(/^я$/g, 'yä')
 
-	// [qğ] перед [ый] в мягких слогах
+	// [кг] перед [ый] в мягких слогах
 	.replace(/кый([лт])([ьеә]|[кнмтл][еә])/g, 'qi$1$2')
 	.replace(/гы([лтр])([ьеә]|[кнмтл][еә])/g, 'ğe$1$2')
 	.replace(/гый([рз]+)([ьеә]|[кнмтл][еә])/g, 'ği$1$2')
@@ -437,71 +342,16 @@ var translitWord = {
 	.replace(/[а-яёәөүҗңһ]/g, (f) => ['a', 'b', 'v', 'g', 'd', 'yī', 'yo', 'j', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'x', 'ts', 'ç', 'ş', 'şç', '', 'ī', '', 'e', 'yu', 'ya', 'ä','ö','ü','c','ñ','h']['абвгдеёжзийклмнопрстуфхцчшщъыьэюяәөүҗңһ'.indexOf(f)]);
 },
 'ttc2l 2.1 ы-ī, ц-ţ': function(text) {
-	return text
-	// Некоторые иксключения
-	// последняя буква или несколько в мягких слогах на кириллице
-	// в -> w 
-	.replace(/һава/g, 'hawa')
-	.replace(/вакыт/g, 'waqīt')
-	.replace(/вакт/g, 'waqt')
-	.replace(/ватан/g, 'watan')
-	.replace(/чуваш/g, 'çuwaş')
-	.replace(/^вә$/g, 'wä')
-	.replace(/савыт/g, 'sawīt')
-	.replace(/авыл/g, 'awīl')
-	.replace(/җава([пб])/g, 'cawa$1')
-	.replace(/вөҗдан/g, 'wöcdan')
-	.replace(/тавык/g, 'tawīq')
-	.replace(/тавыш/g, 'tawīş')
-	.replace(/яв([аыугдм])/g, 'yaw$1')
-	.replace(/^вак$/g, 'waq')
-	.replace(/аваз/g, 'awaz')
-	.replace(/авыр/g, 'awīr')
-	.replace(/дәвам/g, 'däwäм') // м
-	.replace(/вакый/g, 'waqīy')
-	//.replace(/каравың/g, 'qarawīñ')
-	.replace(/вың$/g, 'wīñ')
-	.replace(/вең$/g, 'weñ')
-	.replace(/вын$/g, 'wīn')
-	.replace(/вен$/g, 'wen')
-	.replace(/әвер/g, 'äweр') // р
-	.replace(/рәвеш/g, 'räweш') // ш
-	.replace(/вазг/g, 'wäzг') // г
-	.replace(/тасвир/g, 'taswir')
-	.replace(/вәхш/g, 'wäxш') // ш
-	.replace(/вәкил/g, 'wäkiл') // л
 
-	// имена
-	.replace(/вәлит/g, 'wälit')
-	.replace(/вәли/g, 'wälи') // и
-	.replace(/вагыйз/g, 'wağiz')
-	.replace(/равил/g, 'rawiл') // л
+	var correct = ['ı','ī'];
 	
-	// другие
-	.replace(/әйе/g, 'äye')
-	.replace(/сәлам/g, 'säläм') // м
-	//.replace(/табигат/g, 'täbiгат') // гат
-
-	// другие
-	//.replace(/аль$/g, 'al\'')
-	.replace(/европ/g, 'yevrop')
-	.replace(/проект/g, 'proyekt')
-	.replace(/концерт/g, 'konţert')
-	.replace(/комплекс/g, 'kompleks')
-	.replace(/документ/g, 'dokument')
-	.replace(/академ/g, 'akadem')
-	.replace(/комп/g, 'komp')
-	.replace(/коммуникац/g, 'kommunikaţ')
-	.replace(/коммун/g, 'kommun')
-	.replace(/команд/g, 'komand')
-
-	// имена
-	.replace(/екатер/g, 'yekater')
+	return text
+	.ttc2lExceptions(text, correct)
 
 	// отдельно стоящая [я]
 	.replace(/^я$/g, 'yä')
 
-	// [qğ] перед [ый] в мягких слогах
+	// [кг] перед [ый] в мягких слогах
 	.replace(/кый([лт])([ьеә]|[кнмтл][еә])/g, 'qi$1$2')
 	.replace(/гы([лтр])([ьеә]|[кнмтл][еә])/g, 'ğe$1$2')
 	.replace(/гый([рз]+)([ьеә]|[кнмтл][еә])/g, 'ği$1$2')
@@ -550,71 +400,13 @@ var translitWord = {
 	.replace(/[а-яёәөүҗңһ]/g, (f) => ['a', 'b', 'v', 'g', 'd', 'yī', 'yo', 'j', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'x', 'ţ', 'ç', 'ş', 'şç', '', 'ī', '', 'e', 'yu', 'ya', 'ä','ö','ü','c','ñ','h']['абвгдеёжзийклмнопрстуфхцчшщъыьэюяәөүҗңһ'.indexOf(f)]);
 },
 'ttc2l 2.2 ы-î, ц-ţ': function(text) {
-	return text
-	// Некоторые иксключения
-	// последняя буква или несколько в мягких слогах на кириллице
-	// в -> w 
-	.replace(/һава/g, 'hawa')
-	.replace(/вакыт/g, 'waqît')
-	.replace(/вакт/g, 'waqt')
-	.replace(/ватан/g, 'watan')
-	.replace(/чуваш/g, 'çuwaş')
-	.replace(/^вә$/g, 'wä')
-	.replace(/савыт/g, 'sawît')
-	.replace(/авыл/g, 'awîl')
-	.replace(/җава([пб])/g, 'cawa$1')
-	.replace(/вөҗдан/g, 'wöcdan')
-	.replace(/тавык/g, 'tawîq')
-	.replace(/тавыш/g, 'tawîş')
-	.replace(/яв([аыугдм])/g, 'yaw$1')
-	.replace(/^вак$/g, 'waq')
-	.replace(/аваз/g, 'awaz')
-	.replace(/авыр/g, 'awîr')
-	.replace(/дәвам/g, 'däwäм') // м
-	.replace(/вакый/g, 'waqîy')
-	//.replace(/каравың/g, 'qarawîñ')
-	.replace(/вың$/g, 'wîñ')
-	.replace(/вең$/g, 'weñ')
-	.replace(/вын$/g, 'wîn')
-	.replace(/вен$/g, 'wen')
-	.replace(/әвер/g, 'äweр') // р
-	.replace(/рәвеш/g, 'räweш') // ш
-	.replace(/вазг/g, 'wäzг') // г
-	.replace(/тасвир/g, 'taswir')
-	.replace(/вәхш/g, 'wäxш') // ш
-	.replace(/вәкил/g, 'wäkiл') // л
 
-	// имена
-	.replace(/вәлит/g, 'wälit')
-	.replace(/вәли/g, 'wälи') // и
-	.replace(/вагыйз/g, 'wağiz')
-	.replace(/равил/g, 'rawiл') // л
+	var correct = ['ı','î'];
 	
-	// другие
-	.replace(/әйе/g, 'äye')
-	.replace(/сәлам/g, 'säläм') // м
-	//.replace(/табигат/g, 'täbiгат') // гат
+	return text
+	.ttc2lExceptions(text, correct)
 
-	// другие
-	//.replace(/аль$/g, 'al\'')
-	.replace(/европ/g, 'yevrop')
-	.replace(/проект/g, 'proyekt')
-	.replace(/концерт/g, 'konţert')
-	.replace(/комплекс/g, 'kompleks')
-	.replace(/документ/g, 'dokument')
-	.replace(/академ/g, 'akadem')
-	.replace(/комп/g, 'komp')
-	.replace(/коммуникац/g, 'kommunikaţ')
-	.replace(/коммун/g, 'kommun')
-	.replace(/команд/g, 'komand')
-
-	// имена
-	.replace(/екатер/g, 'yekater')
-
-	// отдельно стоящая [я]
-	.replace(/^я$/g, 'yä')
-
-	// [qğ] перед [ый] в мягких слогах
+	// [кг] перед [ый] в мягких слогах
 	.replace(/кый([лт])([ьеә]|[кнмтл][еә])/g, 'qi$1$2')
 	.replace(/гы([лтр])([ьеә]|[кнмтл][еә])/g, 'ğe$1$2')
 	.replace(/гый([рз]+)([ьеә]|[кнмтл][еә])/g, 'ği$1$2')
@@ -663,71 +455,16 @@ var translitWord = {
 	.replace(/[а-яёәөүҗңһ]/g, (f) => ['a', 'b', 'v', 'g', 'd', 'yî', 'yo', 'j', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'x', 'ţ', 'ç', 'ş', 'şç', '', 'î', '', 'e', 'yu', 'ya', 'ä','ö','ü','c','ñ','h']['абвгдеёжзийклмнопрстуфхцчшщъыьэюяәөүҗңһ'.indexOf(f)]);
 },
 'ttc2l 2.3 ы-î, ц-ţ, әөү-āōū': function(text) {
-	return text
-	// Некоторые иксключения
-	// последняя буква или несколько в мягких слогах на кириллице
-	// в -> w 
-	.replace(/һава/g, 'hawa')
-	.replace(/вакыт/g, 'waqît')
-	.replace(/вакт/g, 'waqt')
-	.replace(/ватан/g, 'watan')
-	.replace(/чуваш/g, 'çuwaş')
-	.replace(/^вә$/g, 'wā')
-	.replace(/савыт/g, 'sawît')
-	.replace(/авыл/g, 'awîl')
-	.replace(/җава([пб])/g, 'cawa$1')
-	.replace(/вөҗдан/g, 'wōcdan')
-	.replace(/тавык/g, 'tawîq')
-	.replace(/тавыш/g, 'tawîş')
-	.replace(/яв([аыугдм])/g, 'yaw$1')
-	.replace(/^вак$/g, 'waq')
-	.replace(/аваз/g, 'awaz')
-	.replace(/авыр/g, 'awîr')
-	.replace(/дәвам/g, 'dāwāм') // м
-	.replace(/вакый/g, 'waqîy')
-	//.replace(/каравың/g, 'qarawîñ')
-	.replace(/вың$/g, 'wîñ')
-	.replace(/вең$/g, 'weñ')
-	.replace(/вын$/g, 'wîn')
-	.replace(/вен$/g, 'wen')
-	.replace(/әвер/g, 'āweр') // р
-	.replace(/рәвеш/g, 'rāweш') // ш
-	.replace(/вазг/g, 'wāzг') // г
-	.replace(/тасвир/g, 'taswir')
-	.replace(/вәхш/g, 'wāxш') // ш
-	.replace(/вәкил/g, 'wākiл') // л
 
-	// имена
-	.replace(/вәлит/g, 'wālit')
-	.replace(/вәли/g, 'wālи') // и
-	.replace(/вагыйз/g, 'wağiz')
-	.replace(/равил/g, 'rawiл') // л
+	var correct = ['ıäöü','īāōū'];
 	
-	// другие
-	.replace(/әйе/g, 'āye')
-	.replace(/сәлам/g, 'sālāм') // м
-	//.replace(/табигат/g, 'tābiгат') // гат
-
-	// другие
-	//.replace(/аль$/g, 'al\'')
-	.replace(/европ/g, 'yevrop')
-	.replace(/проект/g, 'proyekt')
-	.replace(/концерт/g, 'konţert')
-	.replace(/комплекс/g, 'kompleks')
-	.replace(/документ/g, 'dokument')
-	.replace(/академ/g, 'akadem')
-	.replace(/комп/g, 'komp')
-	.replace(/коммуникац/g, 'kommunikaţ')
-	.replace(/коммун/g, 'kommun')
-	.replace(/команд/g, 'komand')
-
-	// имена
-	.replace(/екатер/g, 'yekater')
+	return text
+	.ttc2lExceptions(text, correct)
 
 	// отдельно стоящая [я]
 	.replace(/^я$/g, 'yā')
 
-	// [qğ] перед [ый] в мягких слогах
+	// [кг] перед [ый] в мягких слогах
 	.replace(/кый([лт])([ьеә]|[кнмтл][еә])/g, 'qi$1$2')
 	.replace(/гы([лтр])([ьеә]|[кнмтл][еә])/g, 'ğe$1$2')
 	.replace(/гый([рз]+)([ьеә]|[кнмтл][еә])/g, 'ği$1$2')
@@ -775,67 +512,12 @@ var translitWord = {
 
 	.replace(/[а-яёәөүҗңһ]/g, (f) => ['a', 'b', 'v', 'g', 'd', 'yî', 'yo', 'j', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'x', 'ţ', 'ç', 'ş', 'şç', '', 'î', '', 'e', 'yu', 'ya', 'ā','ō','ū','c','ñ','h']['абвгдеёжзийклмнопрстуфхцчшщъыьэюяәөүҗңһ'.indexOf(f)]);
 },
-'ttc2l 2.4 ы-î, ц-ţ, әөү-āōū, hkg=hkg': function(text) {
-	return text
-	// Некоторые иксключения
-	// последняя буква или несколько в мягких слогах на кириллице
-	// в -> w 
-	.replace(/һава/g, 'hawa')
-	.replace(/вакыт/g, 'wakît')
-	.replace(/вакт/g, 'wakt')
-	.replace(/ватан/g, 'watan')
-	.replace(/чуваш/g, 'çuwaş')
-	.replace(/^вә$/g, 'wā')
-	.replace(/савыт/g, 'sawît')
-	.replace(/авыл/g, 'awîl')
-	.replace(/җава([пб])/g, 'cawa$1')
-	.replace(/вөҗдан/g, 'wōcdan')
-	.replace(/тавык/g, 'tawîk')
-	.replace(/тавыш/g, 'tawîş')
-	.replace(/яв([аыугдм])/g, 'yaw$1')
-	.replace(/^вак$/g, 'wak')
-	.replace(/аваз/g, 'awaz')
-	.replace(/авыр/g, 'awîr')
-	.replace(/дәвам/g, 'dāwāм') // м
-	.replace(/вакый/g, 'wakîy')
-	//.replace(/каравың/g, 'karawîñ')
-	.replace(/вың$/g, 'wîñ')
-	.replace(/вең$/g, 'weñ')
-	.replace(/вын$/g, 'wîn')
-	.replace(/вен$/g, 'wen')
-	.replace(/әвер/g, 'āweр') // р
-	.replace(/рәвеш/g, 'rāweш') // ш
-	.replace(/вазг/g, 'wāzг') // г
-	.replace(/тасвир/g, 'taswir')
-	.replace(/вәхш/g, 'wāhш') // ш
-	.replace(/вәкил/g, 'wākiл') // л
+'ttc2l 2.4 ы-î, ц-ţ, hkg=xqğ, әөү-āōū': function(text) {
 
-	// имена
-	.replace(/вәлит/g, 'wālit')
-	.replace(/вәли/g, 'wālи') // и
-	.replace(/вагыйз/g, 'wagiz')
-	.replace(/равил/g, 'rawiл') // л
+	var correct = ['ıxqğäöü','îһкгāōū']; // һкг
 	
-	// другие
-	.replace(/әйе/g, 'āye')
-	.replace(/сәлам/g, 'sālāм') // м
-	//.replace(/табигат/g, 'tābiгат') // гат
-
-	// другие
-	//.replace(/аль$/g, 'al\'')
-	.replace(/европ/g, 'yevrop')
-	.replace(/проект/g, 'proyekt')
-	.replace(/концерт/g, 'konţert')
-	.replace(/комплекс/g, 'kompleks')
-	.replace(/документ/g, 'dokument')
-	.replace(/академ/g, 'akadem')
-	.replace(/комп/g, 'komp')
-	.replace(/коммуникац/g, 'kommunikaţ')
-	.replace(/коммун/g, 'kommun')
-	.replace(/команд/g, 'komand')
-
-	// имена
-	.replace(/екатер/g, 'yekater')
+	return text
+	.ttc2lExceptions(text, correct)
 
 	// отдельно стоящая [я]
 	.replace(/^я$/g, 'yā')
@@ -889,68 +571,16 @@ var translitWord = {
 	.replace(/[а-яёәөүҗңһ]/g, (f) => ['a', 'b', 'v', 'g', 'd', 'yî', 'yo', 'j', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'h', 'ţ', 'ç', 'ş', 'şç', '', 'î', '', 'e', 'yu', 'ya', 'ā','ō','ū','c','ñ','h']['абвгдеёжзийклмнопрстуфхцчшщъыьэюяәөүҗңһ'.indexOf(f)]);
 },
 'ttc2l 3 ы-y, җ-đ, hkg=xqğ': function(text) {
-	return text
-	// Некоторые иксключения
-	// последняя буква или несколько в мягких слогах на кириллице
-	// в -> w 
-	.replace(/һава/g, 'hawa')
-	.replace(/вакыт/g, 'wakyt')
-	.replace(/вакт/g, 'wakt')
-	.replace(/ватан/g, 'watan')
-	.replace(/чуваш/g, 'čuwaš')
-	.replace(/^вә$/g, 'wä')
-	.replace(/савыт/g, 'sawyt')
-	.replace(/авыл/g, 'awyl')
-	.replace(/җава([пб])/g, 'đawa$1')
-	.replace(/вөҗдан/g, 'wöđdan')
-	.replace(/тавык/g, 'tawyk')
-	.replace(/тавыш/g, 'tawyş')
-	.replace(/яв([аыугдм])/g, 'jaw$1')
-	.replace(/^вак$/g, 'wak')
-	.replace(/аваз/g, 'awaz')
-	.replace(/авыр/g, 'awyr')
-	.replace(/дәвам/g, 'däwäм') // м
-	.replace(/вакый/g, 'wakyj')
-	//.replace(/каравың/g, 'qarawyñ')
-	.replace(/вың$/g, 'wyñ')
-	.replace(/вең$/g, 'weñ')
-	.replace(/вын$/g, 'wyn')
-	.replace(/вен$/g, 'wen')
-	.replace(/әвер/g, 'äweр') // р
-	.replace(/рәвеш/g, 'räweш') // ш
-	.replace(/вазг/g, 'wäzг') // г
-	.replace(/тасвир/g, 'taswir')
-	.replace(/вәхш/g, 'wähш') // ш
-	.replace(/вәкил/g, 'wäkiл') // л
 
-	// имена
-	.replace(/вәлит/g, 'wälit')
-	.replace(/вәли/g, 'wälи') // и
-	.replace(/вагыйз/g, 'wagiz')
-	.replace(/равил/g, 'rawiл') // л
+	var correct = ['jçşcıyxqğ','žčšđyjһкг']; // һкг
 	
-	// другие
-	.replace(/әйе/g, 'äje')
-	.replace(/сәлам/g, 'säläм') // м
-	//.replace(/табигат/g, 'täbiгат') // гат
-
-	// другие
-	//.replace(/аль$/g, 'al\'')
-	.replace(/европ/g, 'jevrop')
-	.replace(/проект/g, 'projekt')
-	.replace(/концерт/g, 'koncert')
-	.replace(/комплекс/g, 'kompleks')
-	.replace(/документ/g, 'dokument')	
-	.replace(/академ/g, 'akadem')
-	.replace(/комп/g, 'komp')
-	.replace(/коммуникац/g, 'kommunikac')
-	.replace(/коммун/g, 'kommun')
-	.replace(/команд/g, 'komand')
+	return text
+	.ttc2lExceptions(text, correct)
 
 	// отдельно стоящая [я]
 	.replace(/^я$/g, 'jä')
 
-	// [qğ] перед [ый] в мягких слогах
+	// [кг] перед [ый] в мягких слогах
 	.replace(/кый([лт])([ьеә]|[кнмтл][еә])/g, 'ki$1$2')
 	.replace(/гы([лтр])([ьеә]|[кнмтл][еә])/g, 'ge$1$2')
 	.replace(/гый([рз]+)([ьеә]|[кнмтл][еә])/g, 'gi$1$2')
@@ -999,68 +629,16 @@ var translitWord = {
 	.replace(/[а-яёәөүҗңһ]/g, (f) => ['a', 'b', 'v', 'g', 'd', 'jy', 'jo', 'ž', 'z', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'h', 'c', 'č', 'š', 'šč', '', 'y', '', 'e', 'ju', 'ja', 'ä','ö','ü','đ','ñ','h']['абвгдеёжзийклмнопрстуфхцчшщъыьэюяәөүҗңһ'.indexOf(f)]);
 },
 'ttc2l 3 ы-y, җ-ż, hkg=xqğ': function(text) {
-	return text
-	// Некоторые иксключения
-	// последняя буква или несколько в мягких слогах на кириллице
-	// в -> w 
-	.replace(/һава/g, 'hawa')
-	.replace(/вакыт/g, 'wakyt')
-	.replace(/вакт/g, 'wakt')
-	.replace(/ватан/g, 'watan')
-	.replace(/чуваш/g, 'čuwaš')
-	.replace(/^вә$/g, 'wä')
-	.replace(/савыт/g, 'sawyt')
-	.replace(/авыл/g, 'awyl')
-	.replace(/җава([пб])/g, 'żawa$1')
-	.replace(/вөҗдан/g, 'wöżdan')
-	.replace(/тавык/g, 'tawyk')
-	.replace(/тавыш/g, 'tawyş')
-	.replace(/яв([аыугдм])/g, 'jaw$1')
-	.replace(/^вак$/g, 'wak')
-	.replace(/аваз/g, 'awaz')
-	.replace(/авыр/g, 'awyr')
-	.replace(/дәвам/g, 'däwäм') // м
-	.replace(/вакый/g, 'wakyj')
-	//.replace(/каравың/g, 'qarawyñ')
-	.replace(/вың$/g, 'wyñ')
-	.replace(/вең$/g, 'weñ')
-	.replace(/вын$/g, 'wyn')
-	.replace(/вен$/g, 'wen')
-	.replace(/әвер/g, 'äweр') // р
-	.replace(/рәвеш/g, 'räweш') // ш
-	.replace(/вазг/g, 'wäzг') // г
-	.replace(/тасвир/g, 'taswir')
-	.replace(/вәхш/g, 'wähш') // ш
-	.replace(/вәкил/g, 'wäkiл') // л
 
-	// имена
-	.replace(/вәлит/g, 'wälit')
-	.replace(/вәли/g, 'wälи') // и
-	.replace(/вагыйз/g, 'wagiz')
-	.replace(/равил/g, 'rawiл') // л
+	var correct = ['jçşcıyxqğ','žčšżyjһкг']; // һкг
 	
-	// другие
-	.replace(/әйе/g, 'äje')
-	.replace(/сәлам/g, 'säläм') // м
-	//.replace(/табигат/g, 'täbiгат') // гат
-
-	// другие
-	//.replace(/аль$/g, 'al\'')
-	.replace(/европ/g, 'jevrop')
-	.replace(/проект/g, 'projekt')
-	.replace(/концерт/g, 'koncert')
-	.replace(/комплекс/g, 'kompleks')
-	.replace(/документ/g, 'dokument')	
-	.replace(/академ/g, 'akadem')
-	.replace(/комп/g, 'komp')
-	.replace(/коммуникац/g, 'kommunikac')
-	.replace(/коммун/g, 'kommun')
-	.replace(/команд/g, 'komand')
+	return text
+	.ttc2lExceptions(text, correct)
 
 	// отдельно стоящая [я]
 	.replace(/^я$/g, 'jä')
 
-	// [qğ] перед [ый] в мягких слогах
+	// [кг] перед [ый] в мягких слогах
 	.replace(/кый([лт])([ьеә]|[кнмтл][еә])/g, 'ki$1$2')
 	.replace(/гы([лтр])([ьеә]|[кнмтл][еә])/g, 'ge$1$2')
 	.replace(/гый([рз]+)([ьеә]|[кнмтл][еә])/g, 'gi$1$2')
@@ -1109,68 +687,16 @@ var translitWord = {
 	.replace(/[а-яёәөүҗңһ]/g, (f) => ['a', 'b', 'v', 'g', 'd', 'jy', 'jo', 'ž', 'z', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'h', 'c', 'č', 'š', 'šč', '', 'y', '', 'e', 'ju', 'ja', 'ä','ö','ü','ż','ñ','h']['абвгдеёжзийклмнопрстуфхцчшщъыьэюяәөүҗңһ'.indexOf(f)]);
 },
 'ttc2l 3 ы-y, җ-ċ, hkg=xqğ': function(text) {
-	return text
-	// Некоторые иксключения
-	// последняя буква или несколько в мягких слогах на кириллице
-	// в -> w 
-	.replace(/һава/g, 'hawa')
-	.replace(/вакыт/g, 'wakyt')
-	.replace(/вакт/g, 'wakt')
-	.replace(/ватан/g, 'watan')
-	.replace(/чуваш/g, 'čuwaš')
-	.replace(/^вә$/g, 'wä')
-	.replace(/савыт/g, 'sawyt')
-	.replace(/авыл/g, 'awyl')
-	.replace(/җава([пб])/g, 'ċawa$1')
-	.replace(/вөҗдан/g, 'wöċdan')
-	.replace(/тавык/g, 'tawyk')
-	.replace(/тавыш/g, 'tawyş')
-	.replace(/яв([аыугдм])/g, 'jaw$1')
-	.replace(/^вак$/g, 'wak')
-	.replace(/аваз/g, 'awaz')
-	.replace(/авыр/g, 'awyr')
-	.replace(/дәвам/g, 'däwäм') // м
-	.replace(/вакый/g, 'wakyj')
-	//.replace(/каравың/g, 'qarawyñ')
-	.replace(/вың$/g, 'wyñ')
-	.replace(/вең$/g, 'weñ')
-	.replace(/вын$/g, 'wyn')
-	.replace(/вен$/g, 'wen')
-	.replace(/әвер/g, 'äweр') // р
-	.replace(/рәвеш/g, 'räweш') // ш
-	.replace(/вазг/g, 'wäzг') // г
-	.replace(/тасвир/g, 'taswir')
-	.replace(/вәхш/g, 'wähш') // ш
-	.replace(/вәкил/g, 'wäkiл') // л
 
-	// имена
-	.replace(/вәлит/g, 'wälit')
-	.replace(/вәли/g, 'wälи') // и
-	.replace(/вагыйз/g, 'wagiz')
-	.replace(/равил/g, 'rawiл') // л
+	var correct = ['jçşcıyxqğ','žčšċyjһкг']; // һкг
 	
-	// другие
-	.replace(/әйе/g, 'äje')
-	.replace(/сәлам/g, 'säläм') // м
-	//.replace(/табигат/g, 'täbiгат') // гат
-
-	// другие
-	//.replace(/аль$/g, 'al\'')
-	.replace(/европ/g, 'jevrop')
-	.replace(/проект/g, 'projekt')
-	.replace(/концерт/g, 'koncert')
-	.replace(/комплекс/g, 'kompleks')
-	.replace(/документ/g, 'dokument')	
-	.replace(/академ/g, 'akadem')
-	.replace(/комп/g, 'komp')
-	.replace(/коммуникац/g, 'kommunikac')
-	.replace(/коммун/g, 'kommun')
-	.replace(/команд/g, 'komand')
+	return text
+	.ttc2lExceptions(text, correct)
 
 	// отдельно стоящая [я]
 	.replace(/^я$/g, 'jä')
 
-	// [qğ] перед [ый] в мягких слогах
+	// [кг] перед [ый] в мягких слогах
 	.replace(/кый([лт])([ьеә]|[кнмтл][еә])/g, 'ki$1$2')
 	.replace(/гы([лтр])([ьеә]|[кнмтл][еә])/g, 'ge$1$2')
 	.replace(/гый([рз]+)([ьеә]|[кнмтл][еә])/g, 'gi$1$2')
@@ -1219,68 +745,16 @@ var translitWord = {
 	.replace(/[а-яёәөүҗңһ]/g, (f) => ['a', 'b', 'v', 'g', 'd', 'jy', 'jo', 'ž', 'z', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'h', 'c', 'č', 'š', 'šč', '', 'y', '', 'e', 'ju', 'ja', 'ä','ö','ü','ċ','ñ','h']['абвгдеёжзийклмнопрстуфхцчшщъыьэюяәөүҗңһ'.indexOf(f)]);
 },
 'ttc2l 4 ы-y, җ-ż, hkg=xqğ, әөү-āōū': function(text) {
-	return text
-	// Некоторые иксключения
-	// последняя буква или несколько в мягких слогах на кириллице
-	// в -> w 
-	.replace(/һава/g, 'hawa')
-	.replace(/вакыт/g, 'wakyt')
-	.replace(/вакт/g, 'wakt')
-	.replace(/ватан/g, 'watan')
-	.replace(/чуваш/g, 'čuwaš')
-	.replace(/^вә$/g, 'wā')
-	.replace(/савыт/g, 'sawyt')
-	.replace(/авыл/g, 'awyl')
-	.replace(/җава([пб])/g, 'żawa$1')
-	.replace(/вөҗдан/g, 'wōżdan')
-	.replace(/тавык/g, 'tawyk')
-	.replace(/тавыш/g, 'tawyš')
-	.replace(/яв([аыугдм])/g, 'jaw$1')
-	.replace(/^вак$/g, 'wak')
-	.replace(/аваз/g, 'awaz')
-	.replace(/авыр/g, 'awyr')
-	.replace(/дәвам/g, 'dāwāм') // м
-	.replace(/вакый/g, 'wakyj')
-	//.replace(/каравың/g, 'qarawyñ')
-	.replace(/вың$/g, 'wyñ')
-	.replace(/вең$/g, 'weñ')
-	.replace(/вын$/g, 'wyn')
-	.replace(/вен$/g, 'wen')
-	.replace(/әвер/g, 'āweр') // р
-	.replace(/рәвеш/g, 'rāweш') // ш
-	.replace(/вазг/g, 'wāzг') // г
-	.replace(/тасвир/g, 'taswir')
-	.replace(/вәхш/g, 'wāhш') // ш
-	.replace(/вәкил/g, 'wākiл') // л
 
-	// имена
-	.replace(/вәлит/g, 'wālit')
-	.replace(/вәли/g, 'wālи') // и
-	.replace(/вагыйз/g, 'wagiz')
-	.replace(/равил/g, 'rawiл') // л
+	var correct = ['jçşcıyxqğäöü','žčšżyjһкгāōū']; // һкг
 	
-	// другие
-	.replace(/әйе/g, 'āje')
-	.replace(/сәлам/g, 'sālāм') // м
-	//.replace(/табигат/g, 'tābiгат') // гат
-
-	// другие
-	//.replace(/аль$/g, 'al\'')
-	.replace(/европ/g, 'jevrop')
-	.replace(/проект/g, 'projekt')
-	.replace(/концерт/g, 'koncert')
-	.replace(/комплекс/g, 'kompleks')
-	.replace(/документ/g, 'dokument')	
-	.replace(/академ/g, 'akadem')
-	.replace(/комп/g, 'komp')
-	.replace(/коммуникац/g, 'kommunikac')
-	.replace(/коммун/g, 'kommun')
-	.replace(/команд/g, 'komand')
+	return text
+	.ttc2lExceptions(text, correct)
 
 	// отдельно стоящая [я]
 	.replace(/^я$/g, 'jā')
 
-	// [qğ] перед [ый] в мягких слогах
+	// [кг] перед [ый] в мягких слогах
 	.replace(/кый([лт])([ьеә]|[кнмтл][еә])/g, 'ki$1$2')
 	.replace(/гы([лтр])([ьеә]|[кнмтл][еә])/g, 'ge$1$2')
 	.replace(/гый([рз]+)([ьеә]|[кнмтл][еә])/g, 'gi$1$2')
