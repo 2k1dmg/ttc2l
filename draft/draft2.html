@@ -242,9 +242,9 @@ var translitWord = {
 	// "İı" fix ɏ -> ı, ɨ -> i
 	//
 	var correct = ['iı','ɨɏ'];
+	text = text.ttc2lExceptions(text, correct);
 
 	return text
-	.ttc2lExceptions(text, correct)
 	.commonTranslit(text, {
 		i:'ɨ', y:'ɏ', jot:'y',
 		q:'q', gh:'ğ', x:'x',
@@ -256,9 +256,9 @@ var translitWord = {
 'ttc2l 1.1 w/o "İı" fix': function(text) {
 	
 	var correct = ['',''];
+	text = text.ttc2lExceptions(text, correct);
 	
 	return text
-	.ttc2lExceptions(text, correct)
 	.commonTranslit(text, {
 		i:'i', y:'ı', jot:'y',
 		q:'q', gh:'ğ', x:'x',
@@ -270,9 +270,9 @@ var translitWord = {
 'ttc2l 2 ы-ī': function(text) {
 
 	var correct = ['ı','ī'];
+	text = text.ttc2lExceptions(text, correct);
 	
 	return text
-	.ttc2lExceptions(text, correct)	
 	.commonTranslit(text, {
 		i:'i', y:'ī', jot:'y',
 		q:'q', gh:'ğ', x:'x',
@@ -284,9 +284,9 @@ var translitWord = {
 'ttc2l 2.1 ы-ī, ц-ţ': function(text) {
 
 	var correct = ['ı','ī'];
+	text = text.ttc2lExceptions(text, correct);
 	
 	return text
-	.ttc2lExceptions(text, correct)
 	.commonTranslit(text, {
 		i:'i', y:'ī', jot:'y',
 		q:'q', gh:'ğ', x:'x',
@@ -298,9 +298,9 @@ var translitWord = {
 'ttc2l 2.2 ы-î, ц-ţ': function(text) {
 
 	var correct = ['ı','î'];
+	text = text.ttc2lExceptions(text, correct);
 	
 	return text
-	.ttc2lExceptions(text, correct)
 	.commonTranslit(text, {
 		i:'i', y:'î', jot:'y',
 		q:'q', gh:'ğ', x:'x',
@@ -312,9 +312,9 @@ var translitWord = {
 'ttc2l 2.3 ы-î, ц-ţ, әөү-āōū': function(text) {
 
 	var correct = ['ıäöü','îāōū'];
+	text = text.ttc2lExceptions(text, correct);
 	
 	return text
-	.ttc2lExceptions(text, correct)
 	.commonTranslit(text, {
 		i:'i', y:'î', jot:'y',
 		q:'q', gh:'ğ', x:'x',
@@ -326,9 +326,9 @@ var translitWord = {
 'ttc2l 2.4 ы-î, ц-ţ, hkg=xqğ, әөү-āōū': function(text) {
 
 	var correct = ['ıxqğäöü','îһкгāōū']; // һкг
+	text = text.ttc2lExceptions(text, correct);
 	
 	return text
-	.ttc2lExceptions(text, correct)
 	.commonTranslit(text, {
 		i:'i', y:'î', jot:'y',
 		q:'k', gh:'g', x:'h',
@@ -340,9 +340,9 @@ var translitWord = {
 'ttc2l 3 ы-y, җ-đ, hkg=xqğ': function(text) {
 
 	var correct = ['jçşcıyxqğ','žčšđyjһкг']; // һкг
+	text = text.ttc2lExceptions(text, correct);
 	
 	return text
-	.ttc2lExceptions(text, correct)
 	.commonTranslit(text, {
 		i:'i', y:'y', jot:'j',
 		q:'k', gh:'g', x:'h',
@@ -354,9 +354,9 @@ var translitWord = {
 'ttc2l 3 ы-y, җ-ż, hkg=xqğ': function(text) {
 
 	var correct = ['jçşcıyxqğ','žčšżyjһкг']; // һкг
+	text = text.ttc2lExceptions(text, correct);
 	
 	return text
-	.ttc2lExceptions(text, correct)
 	.commonTranslit(text, {
 		i:'i', y:'y', jot:'j',
 		q:'k', gh:'g', x:'h',
@@ -368,9 +368,9 @@ var translitWord = {
 'ttc2l 3 ы-y, җ-ċ, hkg=xqğ': function(text) {
 
 	var correct = ['jçşcıyxqğ','žčšċyjһкг']; // һкг
+	text = text.ttc2lExceptions(text, correct);
 	
 	return text
-	.ttc2lExceptions(text, correct)
 	.commonTranslit(text, {
 		i:'i', y:'y', jot:'j',
 		q:'k', gh:'g', x:'h',
@@ -382,9 +382,9 @@ var translitWord = {
 'ttc2l 4 ы-y, җ-ż, hkg=xqğ, әөү-āōū': function(text) {
 
 	var correct = ['jçşcıyxqğäöü','žčšżyjһкгāōū']; // һкг
+	text = text.ttc2lExceptions(text, correct);
 	
 	return text
-	.ttc2lExceptions(text, correct)
 	.commonTranslit(text, {
 		i:'i', y:'y', jot:'j',
 		q:'k', gh:'g', x:'h',
