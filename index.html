@@ -216,8 +216,8 @@ String.prototype.ttc2lCommonTranslit = function (l) {
 	// [гк] перед [аыоу] и [әиөү] (куәт - qüät)
 	.replace(/([гк])([аыоу])([әиөү])/g, (f,p1,p2,p3) => [l.gh,l.q]['гк'.indexOf(p1)] + l.h2s['аыоу'.indexOf(p2)] + p3)
 
-	// [гк] перед [iәеиөү]
-	.replace(/([гк])([iәеиөү])/g, (f, p1, p2) => 'gk'['гк'.indexOf(p1)] + p2)
+	// [гк] перед [әеиөү] ?i l.i
+	//.replace(/([гк])([әеиөү])/g, (f, p1, p2) => 'gk'['гк'.indexOf(p1)] + p2) // ?i l.i
 
 	// - ТВЁРДЫЕ -
 
