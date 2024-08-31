@@ -222,7 +222,7 @@ String.prototype.ttc2lCommonTranslit = function (l) {
 	// - ТВЁРДЫЕ -
 
 	// [еёюя] после согласной и [ъ]
-	.replace(/([бвгджзклмнпрстфхцчшщҗңһ])ъ([еёюя])/g, (f,p1,p2) => p1+'y'+'eoua'['еёюя'.indexOf(p2)])
+	.replace(/([бвгджзклмнпрстфхцчшщҗңһ])ъ([еёюя])/g, (f,p1,p2) => p1+l.jot+'eoua'['еёюя'.indexOf(p2)])
 
 	// [гк] перед [аыоуъ]
 	.replace(/([гк])([аыоуъ])/g, (f, p1, p2) => [l.gh,l.q]['гк'.indexOf(p1)] + p2)
