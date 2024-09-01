@@ -412,6 +412,36 @@ var translitWord = {
 		tz:'c', a:'ā',o:'ō',u:'ū',
 		ch:'č',sh:'š',zh:'ž',js:'ż'
 	});
+},
+'ttc2l 6 ascii': function(text) {
+	
+	return text
+	.ttc2lExceptions(
+		['ığçşjckäöü',['y','g','ch','sh','zh','j','k','a','o','u']
+	])
+	.ttc2lCommonTranslit({
+		i:'i', y:'y', jot:'y',
+		q:'k', gh:'g', x:'h',
+		j2s:['e','o','u','a'], h2s:['a','e','o','u'],
+		tz:'c', a:'a',o:'o',u:'u',
+		ch:'ch',sh:'sh',zh:'zh',js:'j'
+	})
+	.replace(/[ñ]/g, 'ng');
+},
+'ttc2l 6.1 ascii': function(text) {
+	
+	return text
+	.ttc2lExceptions(
+		['ığçşjckäöü',['i','g','ch','sh','zh','j','k','a','o','u']
+	])
+	.ttc2lCommonTranslit({
+		i:'i', y:'i', jot:'y',
+		q:'k', gh:'g', x:'h',
+		j2s:['e','o','u','a'], h2s:['a','e','o','u'],
+		tz:'c', a:'a',o:'o',u:'u',
+		ch:'ch',sh:'sh',zh:'zh',js:'j'
+	})
+	.replace(/[ñ]/g, 'ng');
 }
 };
 
