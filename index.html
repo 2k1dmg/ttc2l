@@ -204,6 +204,9 @@ String.prototype.ttc2lCommonTranslit = function (l) {
 	// ү -> w после мягких согласных (кияү - kiäw, кияүе - kiäwe, кияүне - kiäwne)
 	.replace(/([әеиө]|и[еёюя])ү([еёюя]?)/g, (f,p1,p2) => p1+'w'+(p2?l.j2s['еёюя'.indexOf(p2)]:''))
 
+	// ү -> w перед мягкими согласными после согласных (ителүе - itelüwe)
+	.replace(/([бвгджзклмнпрстфхцчшщҗңһ]+)ү([еёюя])/g, (f,p1,p2) => p1+l.j2s[2]+'w'+l.j2s['еёюя'.indexOf(p2)])
+
 	// [еёюя] после [и]
 	.replace(/и([еёюя])/g, (f, p1) => l.i+l.j2s['еёюя'.indexOf(p1)])
 
@@ -437,6 +440,36 @@ var translitWord = {
 	.ttc2lCommonTranslit({
 		i:'i', y:'i', jot:'y',
 		q:'k', gh:'g', x:'h',
+		j2s:['e','o','u','a'], h2s:['a','e','o','u'],
+		tz:'tz', a:'a',o:'o',u:'u',
+		ch:'ch',sh:'sh',zh:'zh',js:'c'
+	})
+	.replace(/[ñ]/g, 'ng');
+},
+'ttc2l 6.2 ascii': function(text) {
+	
+	return text
+	.ttc2lExceptions(
+		['ığçşjqäöü',['y','gh','ch','sh','zh','q','a','o','u']
+	])
+	.ttc2lCommonTranslit({
+		i:'i', y:'y', jot:'y',
+		q:'q', gh:'gh', x:'kh',
+		j2s:['e','o','u','a'], h2s:['a','e','o','u'],
+		tz:'tz', a:'a',o:'o',u:'u',
+		ch:'ch',sh:'sh',zh:'zh',js:'c'
+	})
+	.replace(/[ñ]/g, 'ng');
+},
+'ttc2l 6.3 ascii': function(text) {
+	
+	return text
+	.ttc2lExceptions(
+		['ığçşjqäöü',['i','gh','ch','sh','zh','q','a','o','u']
+	])
+	.ttc2lCommonTranslit({
+		i:'i', y:'i', jot:'y',
+		q:'q', gh:'gh', x:'kh',
 		j2s:['e','o','u','a'], h2s:['a','e','o','u'],
 		tz:'tz', a:'a',o:'o',u:'u',
 		ch:'ch',sh:'sh',zh:'zh',js:'c'
